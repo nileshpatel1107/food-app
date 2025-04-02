@@ -4,9 +4,8 @@ const { Schema } = mongoose;
 // Cart Schema
 const cartSchema = new Schema({
     cartId: {
-        type: Number,
-
-        unique: true,  // Ensure it's unique
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true, // Auto-generate ObjectId for each cart item
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -17,6 +16,7 @@ const cartSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    totalAmount: { type: Number, default: 0 },
     updatedOn: {
         type: Date,
         default: Date.now,
@@ -25,15 +25,20 @@ const cartSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    cartitems: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'CartItem', // Referencing the CartItem schema
+        },
+    ],
 });
 
 
-// Function to generate the next cartId by finding the max value and incrementing it
-cartSchema.pre('save', async function (next) {
-    if (this.isNew) {
-        const lastCart = await this.constructor.findOne().sort('-cartId');
-        this.cartId = lastCart ? lastCart.cartId + 1 : 1; // If no cartId exists, start from 1
-    }
+
+
+// Cascade delete CartItems when Cart is deleted
+cartSchema.pre("deleteOne", { document: true, query: false }, async function (next) {
+    await mongoose.model("CartItem").deleteMany({ cartId: this._id });
     next();
 });
 

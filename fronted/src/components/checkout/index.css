@@ -1,0 +1,313 @@
+
+/* Custom styles for Swiggy Checkout */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #3d4152;
+  }
+  
+  /* Swiggy orange color */
+  .bg-swiggy-orange {
+    background-color: #fc8019;
+  }
+  
+  .text-swiggy-orange {
+    color: #fc8019;
+  }
+  
+  .border-swiggy-orange {
+    border-color: #fc8019;
+  }
+  
+  /* Swiggy green color */
+  .bg-swiggy-green {
+    background-color: #60b246;
+  }
+  
+  .text-swiggy-green {
+    color: #60b246;
+  }
+  
+  .border-swiggy-green {
+    border-color: #60b246;
+  }
+  
+  /* Custom card shadows */
+  .swiggy-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  /* Custom checkbox styles */
+  .custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #d4d5d9;
+    border-radius: 2px;
+    outline: none;
+    transition: all 0.2s ease;
+    position: relative;
+    margin-top: 3px;
+    cursor: pointer;
+  }
+  
+  .custom-checkbox:checked {
+    background-color: #60b246;
+    border-color: #60b246;
+  }
+  
+  .custom-checkbox:checked:after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  /* Button styles */
+  .swiggy-btn-primary {
+    background-color: #fc8019;
+    color: white;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+  }
+  
+  .swiggy-btn-primary:hover {
+    background-color: #e67718;
+  }
+  
+  .swiggy-btn-secondary {
+    background-color: white;
+    color: #60b246;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 1px solid #60b246;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+  }
+  
+  .swiggy-btn-secondary:hover {
+    background-color: #f0f8ee;
+  }
+  
+  /* Status indicators */
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  
+  .status-indicator.green {
+    background-color: #60b246;
+  }
+  
+  .status-indicator.red {
+    background-color: #ff5252;
+  }
+  
+  /* Address card styles */
+  .address-card {
+    border: 1px solid #d4d5d9;
+    border-radius: 4px;
+    padding: 16px;
+    transition: all 0.2s ease;
+  }
+  
+  .address-card:hover, .address-card.selected {
+    border-color: #60b246;
+  }
+  
+  .address-card.selected {
+    background-color: #f0f8ee;
+  }
+  
+  /* Item unavailable styling */
+  .item-unavailable {
+    background-color: #fff8f8;
+    border: 1px solid #ffe6e6;
+    border-radius: 4px;
+    padding: 12px;
+  }
+  
+  /* Bill details table styles */
+  .bill-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+  
+  .bill-item:not(:last-child) {
+    border-bottom: 1px dashed #eaeaea;
+  }
+  
+  .bill-total {
+    font-weight: 700;
+    padding: 12px 0;
+    border-top: 1px solid #d4d5d9;
+    margin-top: 8px;
+  }
+  
+  /* Info icon with tooltip */
+  .info-icon {
+    color: #757575;
+    font-size: 16px;
+    margin-left: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .info-icon:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3d4152;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  
+  /* Bottom notification bar */
+  .bottom-notification {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #282c3f;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Restaurant info card */
+  .restaurant-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .restaurant-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 12px;
+  }
+  
+  .restaurant-name {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  
+  .restaurant-area {
+    color: #7e808c;
+    font-size: 13px;
+  }
+  
+  /* Custom input styles */
+  .swiggy-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d4d5d9;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  .swiggy-input:focus {
+    border-color: #fc8019;
+    outline: none;
+  }
+  
+  /* Payment options styles */
+  .payment-option {
+    border: 1px solid #d4d5d9;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .payment-option:hover, .payment-option.selected {
+    border-color: #fc8019;
+    background-color: #fff8f0;
+  }
+  
+  .payment-option.selected .radio-indicator {
+    border-color: #fc8019;
+    background-color: #fc8019;
+  }
+  
+  .radio-indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d4d5d9;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  
+  .radio-indicator::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: white;
+    opacity: 0;
+    transition: all 0.2s ease;
+  }
+  
+  .payment-option.selected .radio-indicator::after {
+    opacity: 1;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .restaurant-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .restaurant-logo {
+      margin-bottom: 12px;
+    }
+    
+    .bottom-notification {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .bottom-notification button {
+      margin-top: 8px;
+      margin-left: 0;
+    }
+  }

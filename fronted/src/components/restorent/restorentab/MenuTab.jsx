@@ -3,22 +3,14 @@ import { Grid, Card, CardContent, CardMedia, Typography, Button, Box, IconButton
 import { Add, Remove, ShoppingCart, LocalAtm, CheckCircle, Cancel, Close, Fastfood } from "@mui/icons-material";
 import axios from "axios";
 
-const MenuTab = ({ menu, restaurantName }) => {
-    console.log(menu);
-    const [cart, setCart] = useState(
-        menu.reduce((acc, item) => {
-            acc[item._id] = item.quantity || 0; // Initialize from menu props
-            return acc;
-        }, {})
-    );
-    console.log(cart);
+const MenuTab = ({ menu, restaurantName, cart }) => {
+
+    const [usercart, setCart] = useState([cart]);
+
     const [selectedItem, setSelectedItem] = useState(null);
     const [openModal, setOpenModal] = useState(false);
+    const userId = "67db80a5c58bdee5968bf217"; // Replace with actual user ID
 
-    // Optimistic state for cart quantity
-    const [optimisticCart, updateOptimisticCart] = useOptimistic(cart, (prevCart, { menuId, newQuantity }) => {
-        return { ...prevCart, [menuId]: newQuantity };
-    });
 
     const handleOpenModal = (item) => {
         setSelectedItem(item);
@@ -31,32 +23,39 @@ const MenuTab = ({ menu, restaurantName }) => {
     };
 
     const handleAddToCart = async (item) => {
-        startTransition(() => {
-            updateOptimisticCart({ menuId: item._id, newQuantity: 1 });
-        });
-        console.log("Adding to cart:", item.name);
-        try {
-            await axios.post("http://localhost:5001/cart/67ebb76362b8558156c78142/item", {
-                "menuId": "67e8e8bc1c82b97b7927a7e4",
-                "amount": 200,
-                "quantity": 2,
-                "createdBy": "67db80a5c58bdee5968bf217"
-            }
-            );
+        console.log("Adding to cart:", item);
 
+        const newQuantity = (cart[item._id] || 0) + 1; // Correctly calculate new quantity
+
+        try {
+            const response = await axios.put("http://localhost:5001/cart//addcart/67db80a5c58bdee5968bf217", {
+                cartitems: { 
+                    restaurantID: item.restaurantID, // Replace with actual restaurant ID
+                    menuId: item._id, // Replace with actual menu ID
+                    quantity:1,
+                    amount: item.price, // Replace with actual amount
+                    createdBy: userId, // Replace with actual user ID
+                    cartId:"67ed05f7fda424ee8817c2de"
+                 },
+                userId: userId, // Replace with actual user ID
+
+            });
+            // Update cart state correctly
             setCart((prevCart) => ({
                 ...prevCart,
-                [item._id]: 1,
+                [item.quantity]: newQuantity, // Correct key usage
             }));
+
+            console.log("Cart updated:", response.data);
         } catch (error) {
-            console.error("Error adding to cart:", error);
+            console.error("Error adding item to cart:", error);
         }
     };
 
+
+
     const updateQuantity = async (menuId, newQuantity) => {
-        startTransition(() => {
-            updateOptimisticCart({ menuId, newQuantity });
-        });
+
 
         try {
             await axios.put(`http://localhost:5001/api/cart/${menuId}`, { quantity: newQuantity });
@@ -66,12 +65,15 @@ const MenuTab = ({ menu, restaurantName }) => {
         }
     };
 
+
+    console.log("Cart state after adding:", cart);
     return (
         <Grid container spacing={2} justifyContent="center">
             {menu.length > 0 ? (
                 menu.map((item) => {
-                    const quantity = optimisticCart[item._id] || 0;
-
+                    console.log("Menu item:", item.quantity);
+                    const quantity = item.quantity || 0;
+                    console.log("Quantity:", quantity);
                     return (
                         <Grid item key={item._id} xs={12} sm={6} md={4} lg={3}>
                             <Card sx={{ width: 350, height: 420, display: "flex", flexDirection: "column", borderRadius: 3, boxShadow: 4, transition: "transform 0.3s ease-in-out", "&:hover": { transform: "scale(1.03)" } }}>

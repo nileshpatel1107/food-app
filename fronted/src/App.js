@@ -13,6 +13,7 @@ import AgGridTable from './utils/AgGridTable';
 import RestaurantList from './components/restorent/RestorentList';
 import EditRestaurant from './components/restorent/EditRestaurant';
 import RestaurantLayout from './components/restorent/RestorentLayout';
+import Checkoutpage from './components/checkout/Checkoutpage';
 
 function App() {
   const [rowData] = useState([
@@ -36,6 +37,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/layout" element={<RestaurantLayout />} />
           <Route path="/restorantlist" element={<RestaurantList />} />
+          <Route path="/checkout" element={<Checkoutpage />} />
 
           {/* Protected Routes */}
           {/* <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} /> */}
