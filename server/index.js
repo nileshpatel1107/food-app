@@ -7,6 +7,9 @@ const dashboardRoutes = require('./routes/dashboardRoutes.js')
 const restaurantsRoutes = require('./routes/restaurantsRoutes.js')
 const restaurantMenuRoutes = require('./routes/restaurantMenuRoutes.js')
 const cartRoutes = require('./routes/cartRoutes.js')
+const discountRoutes = require("./routes/discountRoutes.js")
+const orderRoutes = require("./routes/orderRoutes.js")
+const userAddressRoutes = require("./routes/userAddressRoutes.js")
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,7 +28,9 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/restaurants", restaurantsRoutes);
 app.use("/restaurantmenu", restaurantMenuRoutes);
 app.use("/cart", cartRoutes);
-
+app.use("/order", orderRoutes);
+app.use("/discount",discountRoutes );
+app.use("/useraddress", userAddressRoutes);
 
 // Sample route
 app.get("/", async (req, res) => {

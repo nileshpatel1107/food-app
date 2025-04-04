@@ -33,13 +33,12 @@ const discountSchema = new mongoose.Schema({
     },
     maxDiscount: {
         type: Number,
-        required: function () {
+        default: function () {
             return this.type === 'percentage';
         },
     },
     couponCode: {
         type: String,
-        unique: true,
         required: true,
         trim: true,
     },

@@ -1,276 +1,394 @@
-import React, { useState } from 'react';
-import './index.css'; // Import your CSS file here
-const Checkoutpage = () => {
-    const [selectedAddress, setSelectedAddress] = useState('home');
-  
-    return (
-      <div className="bg-gray-100 min-h-screen">
-        {/* Header */}
-        <header className="bg-white py-3 px-4 shadow-sm flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="bg-swiggy-orange p-2 rounded-md mr-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 3L4 9V21H20V9L12 3Z" stroke="white" strokeWidth="2"/>
-              </svg>
-            </div>
-            <span className="font-bold text-gray-800">SECURE CHECKOUT</span>
-          </div>
-          <div className="flex items-center">
-            <button className="flex items-center mr-6 text-gray-700">
-              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M12 21a9 9 0 110-18 9 9 0 010 18z"></path>
-              </svg>
-              <span>Help</span>
-            </button>
-            <div className="flex items-center">
-              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-              </svg>
-              <span>Nikunj</span>
-            </div>
-          </div>
-        </header>
-  
-        <div className="container mx-auto py-6 px-4 md:px-0">
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Left Section */}
-            <div className="flex-1">
-              {/* Unavailable Items Section */}
-              <div className="swiggy-card bg-white mb-6 p-6">
-                <div className="flex items-start">
-                  <div className="bg-gray-200 p-2 rounded-md">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                    </svg>
-                  </div>
-                  <div className="ml-4">
-                    <h2 className="text-lg font-bold">1 item unavailable</h2>
-                    <p className="text-gray-600 mt-1">Sorry! few items are now out of stock.</p>
-                    
-                    <button className="swiggy-btn-primary mt-4">
-                      REMOVE UNAVAILABLE ITEMS
-                    </button>
-                  </div>
-                </div>
+import React, { useEffect, useState } from 'react';
+import { Modal, Box, TextField, Button, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PaymentIcon from '@mui/icons-material/Payment';
+import axios from 'axios'; // For making API requests
+import './index.css'; // Import the CSS file
+
+const CheckoutPage = () => {
+  const [selectedAddress, setSelectedAddress] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const [openAddressModal, setOpenAddressModal] = useState(false);
+  const [isDeliveryConfirmed, setIsDeliveryConfirmed] = useState(false);
+  const [newAddress, setNewAddress] = useState({
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+  });
+
+  const[userAddress, setUserAddress] = useState([]);
+
+
+  //Fetch all address
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/useraddress');
+        setUserAddress(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching address:', error);
+      }
+    };
+    fetchAddress();
+  }, [userAddress]);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+  const handleOpenAddressModal = () => setOpenAddressModal(true);
+  const handleCloseAddressModal = () => setOpenAddressModal(false);
+  const handleDeliveryConfirm = () => setIsDeliveryConfirmed(true);
+  const handleChangeAddress = () => setIsDeliveryConfirmed(false);
+
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setNewAddress((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveAddress = async () => {
+    try {
+      // Replace 'userId' with the actual user ID (e.g., from authentication context or local storage)
+      const userId = 'your-user-id-here'; // Replace this with the actual user ID
+      const addressData = { ...newAddress, userId };
+
+      // Send the new address to the backend API
+      const response = await axios.post('http://localhost:5000/api/addresses', addressData);
+      console.log('Address saved:', response.data);
+
+      // Close the modal and confirm delivery
+      handleCloseAddressModal();
+      setIsDeliveryConfirmed(true);
+    } catch (error) {
+      console.error('Error saving address:', error);
+      alert('Failed to save address. Please try again.');
+    }
+  };
+
+  return (
+    <div className="checkout-container">
+      <div className="checkout-wrapper">
+        {/* Left Section: Delivery Address with Timeline */}
+        <div className="address-section">
+          <div className="timeline">
+            {/* Delivery Address Step */}
+            <div className={`timeline-item ${isDeliveryConfirmed ? 'delivery-confirmed' : ''}`}>
+              <div className="timeline-icon">
+                <LocationOnIcon className={isDeliveryConfirmed ? 'icon-active' : 'icon-inactive'} />
               </div>
-              
-              {/* Address Selection Section */}
-              <div className="swiggy-card bg-white mb-6 p-6">
-                <div className="flex items-start mb-4">
-                  <div className="bg-black p-2 rounded-md">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                  </div>
-                  <div className="ml-4">
-                    <h2 className="text-lg font-bold">Select delivery address</h2>
-                    <p className="text-gray-600 mt-1">You have a saved address in this location</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                  {/* Home Address */}
-                  <div 
-                    className={`address-card ${selectedAddress === 'home' ? 'selected' : ''}`} 
-                    onClick={() => setSelectedAddress('home')}
-                  >
-                    <div className="flex items-center mb-2">
-                      <svg className="w-5 h-5 mr-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                      </svg>
-                      <span className="font-semibold">Home</span>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      Sp Hostel Gulbai Tekra, Kakliben Vyas Marg, Gulbai Tekra, Ahmedabad, Gujarat 380009, India
-                    </p>
-                    <div className="mt-3 text-sm text-gray-500">
-                      14 MINS
-                    </div>
-                    <button className="bg-swiggy-green text-white px-4 py-2 text-sm font-medium rounded mt-3">
-                      DELIVER HERE
-                    </button>
-                  </div>
-                  
-                  {/* Add New Address */}
-                  <div className="address-card hover:border-swiggy-green cursor-pointer">
-                    <div className="flex items-center mb-2">
-                      <svg className="w-5 h-5 mr-2 text-swiggy-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                      </svg>
-                      <span className="font-semibold">Add New Address</span>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      Kakliben Vyas Marg, Gulbai Tekra, Ahmedabad, Gujarat 380009, India
-                    </p>
-                    <button className="swiggy-btn-secondary mt-3">
-                      ADD NEW
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Payment Section Placeholder */}
-              <div className="swiggy-card bg-white p-6">
-                <div className="flex items-start">
-                  <div className="bg-gray-100 p-2 rounded-md">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                  </div>
-                  <div className="ml-4">
-                    <h2 className="text-lg font-bold">Payment</h2>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Right Section - Order Summary */}
-            <div className="md:w-96">
-              <div className="swiggy-card bg-white p-6">
-                <div className="restaurant-card">
-                  <img src="/api/placeholder/48/48" alt="Restaurant" className="restaurant-logo" />
-                  <div>
-                    <h3 className="restaurant-name">Theobroma</h3>
-                    <p className="restaurant-area">CG Road</p>
-                  </div>
-                </div>
-                
-                {/* Unavailable item */}
-                <div className="item-unavailable mb-4">
-                  <div className="flex items-start">
-                    <div className="bg-green-100 text-green-800 p-1 rounded-full text-xs mr-2 mt-1">
-                      V
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <div>
-                          <p className="font-medium">Choice of Croissant/Danish + Beverage</p>
-                        </div>
-                        <div className="flex items-center">
-                          <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded mr-2">Unavailable</span>
-                          <button>
-                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                          </button>
-                        </div>
+              <div className="timeline-content">
+                <h2 className="section-title">Delivery address</h2>
+                {isDeliveryConfirmed && <span className="check-icon">✔</span>}
+                {!isDeliveryConfirmed && (
+                  <>
+                    <p className="section-subtitle">You have a saved address in this location</p>
+                    {/* Address Card */}
+                    <div className="address-card">
+                      <input
+                        type="radio"
+                        name="address"
+                        checked={selectedAddress}
+                        onChange={() => setSelectedAddress(true)}
+                        className="address-radio"
+                      />
+                      <div className="address-details">
+                        <h3 className="address-title">Home</h3>
+                        <p className="address-text">
+                          SP Hostel Gulbai Tekra, Kolikaben Vyas Marg, Gulbai Tekra, Ahmedabad, 380009, India
+                        </p>
+                        <p className="address-time">22 MINS</p>
+                        <button className="deliver-btn" onClick={handleDeliveryConfirm}>
+                          DELIVER HERE
+                        </button>
                       </div>
                     </div>
-                  </div>
-                </div>
-                
-                {/* Special Instructions */}
-                <div className="mb-6">
-                  <div className="flex items-center text-gray-700 mb-2">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                    </svg>
-                    <span className="text-sm">Any suggestions? We will pass it on...</span>
-                  </div>
-                </div>
-                
-                {/* No-contact Delivery Option */}
-                <div className="border border-gray-200 rounded-md p-4 mb-6">
-                  <label className="flex items-start cursor-pointer">
-                    <input type="checkbox" className="custom-checkbox" />
-                    <div className="ml-2">
-                      <p className="font-medium">Opt in for No-contact Delivery</p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Unwell, or avoiding contact? Please select no-contact delivery. Partner will safely place the order outside your door (not for COD).
+                    {/* Add New Address */}
+                    <div className="add-new-address">
+                      <button className="add-new-btn" onClick={handleOpenAddressModal}>
+                        ADD NEW
+                      </button>
+                      <p className="add-new-text">
+                        Kolikaben Vyas Marg, Gulbai Tekra, Ahmedabad 380009, India
                       </p>
                     </div>
-                  </label>
-                </div>
-                
-                {/* Apply Coupon */}
-                <div className="border border-gray-200 rounded-md p-4 mb-6">
-                  <button className="flex items-center w-full text-left">
-                    <svg className="w-5 h-5 mr-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                    </svg>
-                    <span className="font-medium">Apply Coupon</span>
-                  </button>
-                </div>
-                
-                {/* Bill Details */}
-                <div>
-                  <h3 className="font-bold mb-4">Bill Details</h3>
-                  <div className="space-y-2">
-                    <div className="bill-item">
-                      <span className="text-gray-700">Item Total</span>
-                      <span>₹460</span>
-                    </div>
-                    <div className="bill-item">
-                      <div className="flex items-center">
-                        <span className="text-gray-700">Delivery Fee | 1.0 kms</span>
-                        <div className="info-icon" data-tooltip="Distance based fee">
-                          <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <span>₹42</span>
-                    </div>
-                    <div className="bill-item">
-                      <span className="text-gray-700">Delivery Tip</span>
-                      <span className="text-swiggy-orange">Add tip</span>
-                    </div>
-                    <div className="bill-item">
-                      <div className="flex items-center">
-                        <span className="text-gray-700">Platform fee</span>
-                        <div className="info-icon" data-tooltip="Helps us operate and improve our platform">
-                          <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="text-gray-400 line-through mr-2">₹30.00</span>
-                        <span>₹9</span>
-                      </div>
-                    </div>
-                    <div className="bill-item">
-                      <div className="flex items-center">
-                        <span className="text-gray-700">GST and Restaurant Charges</span>
-                        <div className="info-icon" data-tooltip="GST and restaurant packing charges">
-                          <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <span>₹104.42</span>
-                    </div>
+                  </>
+                )}
+                {isDeliveryConfirmed && (
+                  <div className="address-details">
+                    <h3 className="address-title">Home</h3>
+                    <p className="address-text">
+                      SP Hostel Gulbai Tekra, Kolikaben Vyas Marg, Gulbai Tekra, Ahmedabad, 380009, India
+                    </p>
+                    <p className="address-time">22 MINS</p>
+                    <button className="change-btn" onClick={handleChangeAddress}>
+                      CHANGE
+                    </button>
                   </div>
-                  
-                  <div className="bill-total">
-                    <div className="flex justify-between font-bold">
-                      <span>TO PAY</span>
-                      <span>₹615</span>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
-              
-              {/* Bottom Unavailable Items Alert */}
-              <div className="bottom-notification">
-                <div className="flex items-center">
-                  <div className="bg-red-500 p-1 rounded-full mr-3">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
-                  </div>
-                  <span>Item(s) unavailable</span>
-                  <button className="ml-2 text-gray-300 underline">
-                    Try alternatives or remove unavailable item(s) to place an order
-                  </button>
-                </div>
+            </div>
+
+            {/* Payment Method Step */}
+            <div className="timeline-item">
+              <div className="timeline-icon">
+                <PaymentIcon className={isDeliveryConfirmed ? 'icon-active' : 'icon-inactive'} />
+              </div>
+              <div className="timeline-content">
+                <h2 className="section-title">Choose payment method</h2>
+                {isDeliveryConfirmed && (
+                  <button className="proceed-btn">PROCEED TO PAY</button>
+                )}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Right Section: Order Summary */}
+        <div className="order-section">
+          <div className="restaurant-header">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/4/4a/McDonald%27s_logo.svg"
+              alt="McDonald's Logo"
+              className="restaurant-logo"
+            />
+            <h2 className="restaurant-name">McDonald's - Herminagar</h2>
+          </div>
+
+          {/* Order Items */}
+          <div className="order-items">
+            <div className="order-item">
+              <div className="item-details">
+                <span className="item-dot">●</span>
+                <p>2 Crispy Veggie Burger</p>
+              </div>
+              <div className="item-quantity">
+                <button className="quantity-btn">-</button>
+                <span>4</span>
+                <button className="quantity-btn">+</button>
+                <p>₹786.94</p>
+              </div>
+            </div>
+            <div className="order-item">
+              <div className="item-details">
+                <span className="item-dot">●</span>
+                <p>2 Crispy Veggie Burger + McVeggie Burger + Fries (M)</p>
+              </div>
+              <div className="item-quantity">
+                <button className="quantity-btn">-</button>
+                <span>1</span>
+                <button className="quantity-btn">+</button>
+                <p>₹417.82</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Suggestions */}
+          <p className="suggestions-text">Any suggestions? We will pass it on...</p>
+
+          {/* Delivery Instructions */}
+          <div className="delivery-instructions">
+            <label className="checkbox-label">
+              <input type="checkbox" />
+              <span>
+                Opt in for No-contact Delivery. Unwell, or avoiding contact? Please select no-contact delivery. Partner will safely place the order outside your door (not for COD)
+              </span>
+            </label>
+          </div>
+
+          {/* Coupon */}
+          <div className="coupon-section">
+            <button className="coupon-btn" onClick={handleOpenModal}>
+              Apply Coupon
+            </button>
+          </div>
+
+          {/* Billing Details */}
+          <div className="billing-details">
+            <h3 className="section-title">Bill Details</h3>
+            <div className="billing-item">
+              <p>Item Total</p>
+              <p>₹1224.76</p>
+            </div>
+            <div className="billing-item">
+              <p>Delivery Fee | 3.7 kms</p>
+              <p>₹50</p>
+            </div>
+            <div className="billing-item discount">
+              <p>Extra discount for you</p>
+              <p>-₹20</p>
+            </div>
+            <div className="billing-item">
+              <p>Delivery Tip</p>
+              <p className="tip-text">Add tip</p>
+            </div>
+            <div className="billing-item">
+              <p>Platform fee</p>
+              <p>₹9</p>
+            </div>
+            <div className="billing-item">
+              <p>GST and Restaurant Charges</p>
+              <p>₹102.86</p>
+            </div>
+          </div>
+
+          {/* Total */}
+          <div className="total-section">
+            <p>TO PAY</p>
+            <p>₹1367</p>
+          </div>
+
+          {/* Savings */}
+          <div className="savings-section">
+            Savings of ₹20
+          </div>
+        </div>
+
+        {/* Coupon Modal */}
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby="coupon-modal-title"
+          aria-describedby="coupon-modal-description"
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Box className="coupon-modal">
+            <div className="modal-header">
+              <IconButton onClick={handleCloseModal} className="close-btn">
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <div className="modal-content">
+              <div className="coupon-input">
+                <TextField
+                  label="Enter coupon code"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  className="coupon-input-field"
+                />
+                <Button variant="contained" className="apply-btn">
+                  APPLY
+                </Button>
+              </div>
+              <h3 className="modal-title">AVAILABLE COUPONS</h3>
+              <div className="coupon-list">
+                <div className="coupon-item">
+                  <div className="coupon-icon">🎟️</div>
+                  <div className="coupon-details">
+                    <h4>FLAT100</h4>
+                    <p>Get Flat Rs. 100 off</p>
+                    <p>Use code FLAT100 & get flat ₹100 off orders above ₹499</p>
+                    <button className="apply-coupon-btn">APPLY COUPON</button>
+                  </div>
+                </div>
+                <div className="coupon-item">
+                  <div className="coupon-icon">🎟️</div>
+                  <div className="coupon-details">
+                    <h4>TRYNEW</h4>
+                    <p>Get 30% off</p>
+                    <p>Use code TRYNEW & get 30% on orders above ₹179. Maximum discount ₹70.</p>
+                    <button className="apply-coupon-btn">APPLY COUPON</button>
+                  </div>
+                </div>
+                <div className="coupon-item">
+                  <div className="coupon-icon">🎟️</div>
+                  <div className="coupon-details">
+                    <h4>SWIGGYPZ5</h4>
+                    <p>Get flat 25% discount using Swiggy UPI</p>
+                    <p>Flat 25% discount on orders above ₹299</p>
+                    <button className="apply-coupon-btn">APPLY COUPON</button>
+                  </div>
+                </div>
+              </div>
+              <button className="more-btn">+ MORE</button>
+            </div>
+          </Box>
+        </Modal>
+
+        {/* Add New Address Modal */}
+        <Modal
+          open={openAddressModal}
+          onClose={handleCloseAddressModal}
+          aria-labelledby="address-modal-title"
+          aria-describedby="address-modal-description"
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Box className="address-modal">
+            <div className="modal-header">
+              <IconButton onClick={handleCloseAddressModal} className="close-btn">
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <div className="modal-content">
+              <h3 className="modal-title">ADD NEW ADDRESS</h3>
+              <form className="address-form">
+                <TextField
+                  label="Address"
+                  name="address"
+                  value={newAddress.address}
+                  onChange={handleAddressChange}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                  multiline
+                  rows={3}
+                  required
+                />
+                <TextField
+                  label="City"
+                  name="city"
+                  value={newAddress.city}
+                  onChange={handleAddressChange}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  label="State"
+                  name="state"
+                  value={newAddress.state}
+                  onChange={handleAddressChange}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  label="Country"
+                  name="country"
+                  value={newAddress.country}
+                  onChange={handleAddressChange}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  margin="normal"
+                  required
+                />
+                <Button
+                  variant="contained"
+                  className="save-address-btn"
+                  onClick={handleSaveAddress}
+                >
+                  SAVE ADDRESS
+                </Button>
+              </form>
+            </div>
+          </Box>
+        </Modal>
       </div>
-    );
+    </div>
+  );
 };
 
-export default Checkoutpage;
+export default CheckoutPage;

@@ -22,40 +22,38 @@ const cartItemSchema = new Schema({
         ref: 'Restaurant', // Referencing the Restaurant schema
         required: true,
     },
-
-    amount: {
-        type: Number,
-        required: true,
-    },
     quantity: {
         type: Number,
         required: true,
         min: 1, // Quantity should be at least 1
     },
+    amount: {
+        type: Number,
+       min: 0, // Amount should be non-negative
+    },
+    
     totalAmount: {
         type: Number,
-        default: function () {
-            return this.amount * this.quantity; // Calculate total amount based on amount and quantity
-        },
+      default: 0,
     },
-        createdOn: {
-            type: Date,
-            default: Date.now,
-        },
-        updatedOn: {
-            type: Date,
-            default: Date.now,
-        },
-        isDeleted: {
-            type: Boolean,
-            default: false,
-        },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User', // Assuming there is a User model to associate with the creator of the cart item
-            required: true,
-        },
-    });
+    createdOn: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedOn: {
+        type: Date,
+        default: Date.now,
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Assuming there is a User model to associate with the creator of the cart item
+        required: true,
+    },
+});
 
 
 const CartItem = mongoose.model("CartItem", cartItemSchema);

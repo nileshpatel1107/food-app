@@ -1,313 +1,696 @@
+/* Reset default styles for consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* Custom styles for Swiggy Checkout */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    color: #3d4152;
+/* General container styling */
+.checkout-container {
+  min-height: 100vh;
+  background-color: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Wrapper for the two sections */
+.checkout-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  gap: 32px;
+}
+
+/* Responsive layout for larger screens */
+@media (min-width: 1024px) {
+  .checkout-wrapper {
+    flex-direction: row;
   }
-  
-  /* Swiggy orange color */
-  .bg-swiggy-orange {
-    background-color: #fc8019;
+
+  .address-section,
+  .order-section {
+    width: 50%;
   }
-  
-  .text-swiggy-orange {
-    color: #fc8019;
+}
+
+/* Address Section with Timeline */
+.address-section {
+  background-color: #ffffff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.address-section:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.timeline {
+  position: relative;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.icon-active {
+  color: #22c55e;
+}
+
+.icon-inactive {
+  color: #6b7280;
+}
+
+.timeline-content {
+  flex: 1;
+  position: relative;
+}
+
+.timeline-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 24px;
+  height: calc(100% + 32px);
+  width: 2px;
+  background: #d1d5db; /* Default gray line */
+}
+
+.timeline-item.delivery-confirmed::after {
+  background: linear-gradient(to bottom, #22c55e 50%, #d1d5db 50%); /* Green up to 50% when delivery is confirmed */
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.section-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.check-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #22c55e;
+  font-size: 20px;
+}
+
+.address-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.address-card:hover {
+  border-color: #22c55e;
+}
+
+.address-radio {
+  margin-top: 4px;
+  accent-color: #22c55e;
+  cursor: pointer;
+}
+
+.address-radio:focus {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
+
+.address-details {
+  flex: 1;
+  position: relative;
+}
+
+.address-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.address-text {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.address-time {
+  font-size: 14px;
+  color: #4b5563;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.deliver-btn {
+  margin-top: 16px;
+  background-color: #22c55e;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.deliver-btn:hover {
+  background-color: #16a34a;
+  transform: translateY(-1px);
+}
+
+.deliver-btn:focus {
+  outline: 3px solid #86efac;
+  outline-offset: 2px;
+}
+
+.change-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  color: #f97316;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.change-btn:hover {
+  color: #ea580c;
+}
+
+.add-new-address {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.add-new-btn {
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.add-new-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.add-new-btn:focus {
+  outline: 3px solid #d1d5db;
+  outline-offset: 2px;
+}
+
+.add-new-text {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.proceed-btn {
+  width: 100%;
+  background-color: #22c55e;
+  color: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.proceed-btn:hover {
+  background-color: #16a34a;
+  transform: translateY(-1px);
+}
+
+.proceed-btn:focus {
+  outline: 3px solid #86efac;
+  outline-offset: 2px;
+}
+
+/* Order Section */
+.order-section {
+  background-color: #ffffff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.order-section:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.restaurant-logo {
+  height: 28px;
+}
+
+.restaurant-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.item-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.item-dot {
+  color: #22c55e;
+  font-size: 20px;
+}
+
+.item-details p {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quantity-btn {
+  background-color: #f3f4f6;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.quantity-btn:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.quantity-btn:focus {
+  outline: 3px solid #d1d5db;
+  outline-offset: 2px;
+}
+
+.item-quantity span {
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.item-quantity p {
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.suggestions-text {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 24px;
+  line-height: 1.5;
+}
+
+.delivery-instructions {
+  margin-top: 24px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.checkbox-label input {
+  accent-color: #22c55e;
+  cursor: pointer;
+}
+
+.checkbox-label input:focus {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
+
+.checkbox-label span {
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.coupon-section {
+  margin-top: 24px;
+}
+
+.coupon-btn {
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.coupon-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.coupon-btn:focus {
+  outline: 3px solid #d1d5db;
+  outline-offset: 2px;
+}
+
+.billing-details {
+  margin-top: 32px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 20px;
+}
+
+.billing-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #374151;
+}
+
+.billing-item.discount {
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.tip-text {
+  color: #f97316;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.tip-text:hover {
+  color: #ea580c;
+}
+
+.total-section {
+  margin-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.savings-section {
+  margin-top: 20px;
+  background-color: #dcfce7;
+  color: #15803d;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Coupon Modal */
+.coupon-modal {
+  width: 400px;
+  height: 100vh;
+  background-color: #ffffff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Add New Address Modal */
+.address-modal {
+  width: 400px;
+  height: 100vh;
+  background-color: #ffffff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
   }
-  
-  .border-swiggy-orange {
-    border-color: #fc8019;
+  to {
+    transform: translateX(0);
   }
-  
-  /* Swiggy green color */
-  .bg-swiggy-green {
-    background-color: #60b246;
-  }
-  
-  .text-swiggy-green {
-    color: #60b246;
-  }
-  
-  .border-swiggy-green {
-    border-color: #60b246;
-  }
-  
-  /* Custom card shadows */
-  .swiggy-card {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-  }
-  
-  /* Custom checkbox styles */
-  .custom-checkbox {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 1px solid #d4d5d9;
-    border-radius: 2px;
-    outline: none;
-    transition: all 0.2s ease;
-    position: relative;
-    margin-top: 3px;
-    cursor: pointer;
-  }
-  
-  .custom-checkbox:checked {
-    background-color: #60b246;
-    border-color: #60b246;
-  }
-  
-  .custom-checkbox:checked:after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-  
-  /* Button styles */
-  .swiggy-btn-primary {
-    background-color: #fc8019;
-    color: white;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 4px;
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease;
-  }
-  
-  .swiggy-btn-primary:hover {
-    background-color: #e67718;
-  }
-  
-  .swiggy-btn-secondary {
-    background-color: white;
-    color: #60b246;
-    font-weight: 600;
-    padding: 8px 16px;
-    border: 1px solid #60b246;
-    border-radius: 4px;
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease;
-  }
-  
-  .swiggy-btn-secondary:hover {
-    background-color: #f0f8ee;
-  }
-  
-  /* Status indicators */
-  .status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 6px;
-  }
-  
-  .status-indicator.green {
-    background-color: #60b246;
-  }
-  
-  .status-indicator.red {
-    background-color: #ff5252;
-  }
-  
-  /* Address card styles */
-  .address-card {
-    border: 1px solid #d4d5d9;
-    border-radius: 4px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+}
+
+.close-btn {
+  color: #6b7280;
+}
+
+.close-btn:hover {
+  color: #374151;
+}
+
+.modal-content {
+  padding: 0 24px 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.coupon-input {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.coupon-input-field {
+  flex: 1;
+}
+
+.apply-btn {
+  background-color: #f97316 !important;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.apply-btn:hover {
+  background-color: #ea580c !important;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.coupon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coupon-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.coupon-item:hover {
+  border-color: #f97316;
+}
+
+.coupon-icon {
+  font-size: 24px;
+}
+
+.coupon-details {
+  flex: 1;
+}
+
+.coupon-details h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.coupon-details p {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.apply-coupon-btn {
+  background-color: transparent;
+  border: none;
+  color: #f97316;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: color 0.3s ease;
+}
+
+.apply-coupon-btn:hover {
+  color: #ea580c;
+}
+
+.more-btn {
+  background-color: transparent;
+  border: none;
+  color: #f97316;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: color 0.3s ease;
+}
+
+.more-btn:hover {
+  color: #ea580c;
+}
+
+.address-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.save-address-btn {
+  background-color: #22c55e !important;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  transition: background-color 0.3s ease !important;
+  margin-top: 16px;
+}
+
+.save-address-btn:hover {
+  background-color: #16a34a !important;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 640px) {
+  .checkout-container {
     padding: 16px;
-    transition: all 0.2s ease;
   }
-  
-  .address-card:hover, .address-card.selected {
-    border-color: #60b246;
+
+  .address-section,
+  .order-section {
+    padding: 20px;
   }
-  
-  .address-card.selected {
-    background-color: #f0f8ee;
-  }
-  
-  /* Item unavailable styling */
-  .item-unavailable {
-    background-color: #fff8f8;
-    border: 1px solid #ffe6e6;
-    border-radius: 4px;
-    padding: 12px;
-  }
-  
-  /* Bill details table styles */
-  .bill-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-  }
-  
-  .bill-item:not(:last-child) {
-    border-bottom: 1px dashed #eaeaea;
-  }
-  
-  .bill-total {
-    font-weight: 700;
-    padding: 12px 0;
-    border-top: 1px solid #d4d5d9;
-    margin-top: 8px;
-  }
-  
-  /* Info icon with tooltip */
-  .info-icon {
-    color: #757575;
-    font-size: 16px;
-    margin-left: 4px;
-    cursor: pointer;
-    position: relative;
-  }
-  
-  .info-icon:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #3d4152;
-    color: white;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    z-index: 10;
-  }
-  
-  /* Bottom notification bar */
-  .bottom-notification {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #282c3f;
-    color: white;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  /* Restaurant info card */
-  .restaurant-card {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #eaeaea;
-  }
-  
-  .restaurant-logo {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    object-fit: cover;
-    margin-right: 12px;
-  }
-  
-  .restaurant-name {
-    font-weight: 700;
+
+  .section-title {
     font-size: 18px;
-    margin-bottom: 4px;
   }
-  
-  .restaurant-area {
-    color: #7e808c;
-    font-size: 13px;
+
+  .order-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
-  
-  /* Custom input styles */
-  .swiggy-input {
+
+  .item-quantity {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d4d5d9;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: all 0.2s ease;
+    justify-content: space-between;
   }
-  
-  .swiggy-input:focus {
-    border-color: #fc8019;
-    outline: none;
+
+  .coupon-modal,
+  .address-modal {
+    width: 100%;
   }
-  
-  /* Payment options styles */
-  .payment-option {
-    border: 1px solid #d4d5d9;
-    border-radius: 4px;
-    padding: 16px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .payment-option:hover, .payment-option.selected {
-    border-color: #fc8019;
-    background-color: #fff8f0;
-  }
-  
-  .payment-option.selected .radio-indicator {
-    border-color: #fc8019;
-    background-color: #fc8019;
-  }
-  
-  .radio-indicator {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #d4d5d9;
-    border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    transition: all 0.2s ease;
-  }
-  
-  .radio-indicator::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: white;
-    opacity: 0;
-    transition: all 0.2s ease;
-  }
-  
-  .payment-option.selected .radio-indicator::after {
-    opacity: 1;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .restaurant-card {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .restaurant-logo {
-      margin-bottom: 12px;
-    }
-    
-    .bottom-notification {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .bottom-notification button {
-      margin-top: 8px;
-      margin-left: 0;
-    }
-  }
+}

@@ -8,19 +8,16 @@ const { ObjectId } = require("mongoose");
 //get all item in cart by userid
 router.get('/getcart/:userId', async (req, res) => {
     const { userId } = req.params;
-    console.log("User ID:", userId);
     try {
         const cart = await Cart.findOne({ userId });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        console.log("Cart ID:", cart);
         const cartItems = await CartItem.find({ cartId: cart._id });
 
         if (!cartItems || cartItems.length === 0) {
             cart.cartitems = []; // Ensure cartItems is an empty array if no items found
         }
-        console.log("Cart Items:", cartItems);
         cart.cartitems = cartItems;
         res.json(cart);
     } catch (error) {
@@ -180,49 +177,25 @@ router.post("/addcartItem/:userId", async (req, res) => {
 
 
 //by user user id only change quantity
-router.put('/:userId/:cartId/:menuId', async (req, res) => {
-    console.log("Update Cart Item API called");
+router.put("/:menuId", async (req, res) => {
     try {
-        const { userId , cartId, menuId } = req.params;
-        const { quantity } = req.body;
-        console.log("User ID:", userId);
-      
-
-        //using userid find cart id
-        const cart = await Cart.findOne({ userId });
-        if (!cart) {
-            return res.status(404).json({ message: 'Cart not found' });
-        }
-        // Find the cart item by menuId and restaurantId
-        // Find the cart by user ID
-     
-        // Find the cart item by menu ID
-        const cartItem = await CartItem.findOne({ cartId, menuId });
-
+        const { menuId } = req.params;
+        const { quantity,amount } = req.body;
+       
+        const cartItem = await CartItem.findOne({ menuId });
         if (!cartItem) {
-            return res.status(404).json({ message: 'Cart item not found' });
+            return res.status(404).json({ message: "Cart item not found" });
         }
 
-        // Update the quantity of the cart item
         cartItem.quantity = quantity;
-
-        // Recalculate the total amount of the cart item
-        cartItem.totalAmount = cartItem.amount * quantity;
+        cartItem.amount = amount;
+        cartItem.totalAmount = amount * quantity;
         await cartItem.save();
 
-
-        // Update the total amount of the cart
-        const cartItems = await CartItem.find({ cartId });
-        cart.totalAmount = cartItems.reduce((sum, item) => sum + item.totalAmount, 0);
-        await cart.save();
-
-
-        res.status(200).json({ message: 'Cart item updated successfully', cartItem });
+        res.json({ message: "Cart item quantity updated successfully", cartItem });
     } catch (error) {
-        console.error('Error updating cart item:', error);
-        res.status(500).json({ message: 'Error updating cart item', error: error.message });
+        res.status(500).json({ message: "Error updating cart item quantity", error });
     }
-}
-);
+});
 
 module.exports = router;

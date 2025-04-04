@@ -13,7 +13,11 @@ import AgGridTable from './utils/AgGridTable';
 import RestaurantList from './components/restorent/RestorentList';
 import EditRestaurant from './components/restorent/EditRestaurant';
 import RestaurantLayout from './components/restorent/RestorentLayout';
+import OrderList from './components/order/AllOrderofUser';
+import OrderDetails from './components/order/OrderDetails';
+import DiscountTable from './components/Tables/DiscountTable';
 import Checkoutpage from './components/checkout/Checkoutpage';
+
 
 function App() {
   const [rowData] = useState([
@@ -38,7 +42,9 @@ function App() {
           <Route path="/layout" element={<RestaurantLayout />} />
           <Route path="/restorantlist" element={<RestaurantList />} />
           <Route path="/checkout" element={<Checkoutpage />} />
-
+          <Route path='/order' element={<OrderList/>} /> {/* /order */}
+          <Route path="/order/orderdetails" element={<OrderDetails />} />
+          <Route path='/discount' element={<DiscountTable />} />
           {/* Protected Routes */}
           {/* <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} /> */}
 
@@ -51,6 +57,8 @@ function App() {
           <Route path="/add" element={<AddRestaurantForm />} /> {/* /restaurant/add */}
           <Route path="/details/:id" element={<RestaurantDetails />} /> {/* /restaurant/details/:id */}
           <Route path='/addmenu' element={<AddMenu />} /> {/* /restaurant/addmenu */}
+
+
         </Routes>
       </Router>
     </div>

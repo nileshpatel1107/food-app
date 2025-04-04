@@ -13,7 +13,7 @@ import ReviewsTab from "./restorentab/ReviewsTab";
 const RestaurantDetails = () => {
     const { id } = useParams();
     const [restaurant, setRestaurant] = useState(null);
-    const [menu, setMenu] = useState([]);
+   
     const [selectedTab, setSelectedTab] = useState(0);
 
 
@@ -22,17 +22,7 @@ const RestaurantDetails = () => {
 
     //api for get cart by userid
     const userId = "67db80a5c58bdee5968bf217"; // Replace with actual user ID
-    useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5001/cart/getcart/67db80a5c58bdee5968bf217`);
-                setCart(response.data);
-            } catch (e) {
-                console.error(e);
-            }
-        };
-        fetchCart();
-    }, []);
+
 
     useEffect(() => {
         const fetchRestaurantDetails = async () => {
@@ -45,36 +35,13 @@ const RestaurantDetails = () => {
             }
         };
 
-        const fetchMenu = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5001/restaurantmenu/${id}`);
-                setMenu(response.data);
-            } catch (error) {
-                console.error("Error fetching menu:", error);
-                toast.error("Failed to load menu!");
-            }
-        };
+    
 
         fetchRestaurantDetails();
-        fetchMenu();
+ 
     }, [id, cart]); // Fetch restaurant details and menu when `id` changes
 
-    // Check if menu items are in the cart and set their quantities
-
-    useEffect(() => {
-        if (!cart || !cart.cartitems) return; // Ensure cart data exists
     
-        setMenu((prevMenu) =>
-            prevMenu.map((item) => {
-                const cartItem = cart.cartitems.find((cartItem) => cartItem.menuId === item._id);
-                console.log("match", cartItem);
-                return {
-                    ...item,
-                    quantity: cartItem ? cartItem.quantity : 0, // Set quantity based on cart
-                };
-            })
-        );
-    }, [cart]); // 🔥 Only run when `cart` changes
  
 
     const handleTabChange = (event, newValue) => {
@@ -83,7 +50,6 @@ const RestaurantDetails = () => {
 
 
 
-    console.log("menu", menu);
     if (!restaurant) {
         return <Typography>Loading...</Typography>;
     }
@@ -170,7 +136,7 @@ const RestaurantDetails = () => {
             </Tabs>
 
             <Box sx={{ mt: 4 }}>
-                {selectedTab === 0 && <MenuTab menu={menu} restaurantName={restaurant.name} cart={cart} />}
+                {selectedTab === 0 && <MenuTab  restaurantId={restaurant._id}  />}
                 {selectedTab === 1 && <OrdersTab />}  {/* Placeholder for Order tab */}
                 {selectedTab === 2 && <BookTableTab restaurantId={restaurant.id} />}  {/* Placeholder for Book Table tab */}
                 {selectedTab === 3 && <ReviewsTab />}  {/* Placeholder for Review tab */}
